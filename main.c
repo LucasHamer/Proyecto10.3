@@ -9,7 +9,7 @@ typedef struct
     char desc[51];
 }Sproducto;
 
-/*void generar();*/
+//void generar();
 void modificar(char []);
 void leer(char []);
 int buscar(Sproducto [],int);
@@ -17,38 +17,20 @@ int buscar(Sproducto [],int);
 int main()
 {
     Sproducto producto[100];
-    int x;
+
+    //generar();
 
     leer("productos.dat");
 
     modificar("productos.dat");
-    FILE*fp;
-    FILE*fe;
-
-    fp=fopen("productos.dat","wb");
-    fe=fopen("productos.csv","wt");
-    if(fp==NULL||fe==NULL)
-    {
-        printf("Error al abrir");
-        system("pause");
-        exit(1);
-    }
-
-    for(x=0;x<5;x++)
-    {
-       fwrite(&producto[x],sizeof(producto),1,fp);
-    }
-
-    fclose(fp);
-    fclose(fe);
 
     leer("productos.dat");
 
     return 0;
 }
-/*void generar()
+void generar()
 {
-    Sproducto producto[100];
+    Sproducto producto;
     int x=0;
     FILE*fp;
 
@@ -59,29 +41,27 @@ int main()
         system("pause");
         exit(1);
     }
-    while(x<5)
+    for(x=0;x<5;x++)
     {
     printf("Ingrese producto: ");
-    scanf("%d",&producto[x].codigo);
+    scanf("%d",&producto.codigo);
     printf("Ingrese precio: ");
-    scanf("%f",&producto[x].precio);
+    scanf("%f",&producto.precio);
     printf("Ingrese descripcion: ");
     fflush(stdin);
-    gets(producto[x].desc);
+    gets(producto.desc);
 
-    x++;
+    fwrite(&producto,sizeof(Sproducto),1,fp);
     }
 
-    fwrite(&producto,sizeof(producto),1,fp);
-
     fclose(fp);
-}*/
+}
 
 void leer(char archivo[])
 {
-    Sproducto producto[100];
-    FILE*fp;
     int x=0;
+    FILE*fp;
+    Sproducto producto[100];
 
     fp=fopen("productos.dat","rb");
     if(fp==NULL)
@@ -90,15 +70,12 @@ void leer(char archivo[])
         system("pause");
         exit(2);
     }
-    fread(&producto,sizeof(producto),1,fp);
+    fread(&producto,sizeof(Sproducto),1,fp);
     printf("Codigo          Precio          Descripcion \n");
     while(!feof(fp))
     {
-        for(x=0;x<5;x++)
-        {
     printf("%d              %.2f              %s \n",producto[x].codigo,producto[x].precio,producto[x].desc);
-    fread(&producto,sizeof(producto),1,fp);
-        }
+    fread(&producto,sizeof(Sproducto),1,fp);
     }
     fclose(fp);
 }
@@ -106,7 +83,8 @@ void modificar(char archivo[])
 {
     Sproducto producto[100];
     int pos,codig;
-/*    FILE*fp;
+    float preciom;
+    FILE*fp;
     FILE*fe;
 
     fp=fopen("productos.dat","wb");
@@ -116,7 +94,7 @@ void modificar(char archivo[])
         printf("Error al abrir");
         system("pause");
         exit(1);
-    }*/
+    }
     printf("Ingrese codigo a modificar: ");
     scanf("%d",&codig);
     while(codig!=0)
@@ -127,7 +105,11 @@ void modificar(char archivo[])
         printf("El precio actual es: %.2f\n",producto[pos].precio);
         printf("Ingrese el nuevo precio: ");
         fflush(stdin);
-        scanf("%f",&producto[pos].precio);
+        scanf("%f",&preciom);
+        producto[pos].precio=preciom;
+
+        fwrite(&producto,sizeof(Sproducto),1,fp);
+        fwrite(&producto,sizeof(Sproducto),1,fe);
     }
     else
     {
@@ -137,11 +119,8 @@ void modificar(char archivo[])
     scanf("%d",&codig);
     }
 
-/*    fwrite(&producto,sizeof(producto),1,fp);
-    fwrite(&producto,sizeof(producto),1,fe);
-
     fclose(fp);
-    fclose(fe);*/
+    fclose(fe);
 }
 int buscar(Sproducto prodi[],int cod)
 {
@@ -161,10 +140,4 @@ int buscar(Sproducto prodi[],int cod)
     }
 
     return pos;
-}
-
-
-
-
-
-
+};
