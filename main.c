@@ -9,20 +9,22 @@ typedef struct
     char desc[51];
 }Sproducto;
 
-//void generar();
-void modificar(char []);
+void generar();
+void modificar(Sproducto []);
 void leer(char []);
 int buscar(Sproducto [],int);
+int leer2(char [],Sproducto []);
 
 int main()
 {
     Sproducto producto[100];
+    int cant;
+
+    cant=leer2("productos.dat",producto);
 
     //generar();
 
-    leer("productos.dat");
-
-    modificar("productos.dat");
+    modificar(producto);
 
     leer("productos.dat");
 
@@ -30,7 +32,7 @@ int main()
 }
 void generar()
 {
-    Sproducto producto;
+    Sproducto producto[5];
     int x=0;
     FILE*fp;
 
@@ -44,44 +46,20 @@ void generar()
     for(x=0;x<5;x++)
     {
     printf("Ingrese producto: ");
-    scanf("%d",&producto.codigo);
+    scanf("%d",&producto[x].codigo);
     printf("Ingrese precio: ");
-    scanf("%f",&producto.precio);
+    scanf("%f",&producto[x].precio);
     printf("Ingrese descripcion: ");
     fflush(stdin);
-    gets(producto.desc);
+    gets(producto[x].desc);
 
-    fwrite(&producto,sizeof(Sproducto),1,fp);
+    fwrite(&producto[x],sizeof(Sproducto),1,fp);
     }
 
     fclose(fp);
 }
-
-void leer(char archivo[])
+void modificar(Sproducto P[])
 {
-    int x=0;
-    FILE*fp;
-    Sproducto producto[100];
-
-    fp=fopen("productos.dat","rb");
-    if(fp==NULL)
-    {
-        printf("Error al abrir");
-        system("pause");
-        exit(2);
-    }
-    fread(&producto,sizeof(Sproducto),1,fp);
-    printf("Codigo          Precio          Descripcion \n");
-    while(!feof(fp))
-    {
-    printf("%d              %.2f              %s \n",producto[x].codigo,producto[x].precio,producto[x].desc);
-    fread(&producto,sizeof(Sproducto),1,fp);
-    }
-    fclose(fp);
-}
-void modificar(char archivo[])
-{
-    Sproducto producto[100];
     int pos,codig;
     float preciom;
     FILE*fp;
@@ -99,17 +77,17 @@ void modificar(char archivo[])
     scanf("%d",&codig);
     while(codig!=0)
     {
-    pos=buscar(producto,codig);
+    pos=buscar(P,codig);
     if(pos!=-1)
     {
-        printf("El precio actual es: %.2f\n",producto[pos].precio);
+        printf("El precio actual es: %.2f\n",P[pos].precio);
         printf("Ingrese el nuevo precio: ");
         fflush(stdin);
         scanf("%f",&preciom);
-        producto[pos].precio=preciom;
+        P[pos].precio=preciom;
 
-        fwrite(&producto,sizeof(Sproducto),1,fp);
-        fwrite(&producto,sizeof(Sproducto),1,fe);
+        fwrite(&P[pos],sizeof(Sproducto),1,fp);
+        fwrite(&P[pos],sizeof(Sproducto),1,fe);
     }
     else
     {
@@ -141,3 +119,49 @@ int buscar(Sproducto prodi[],int cod)
 
     return pos;
 };
+int leer2(char archivo[],Sproducto P[])
+{
+    int x=0;
+    FILE*fp;
+   // Sproducto producto[100];
+
+    fp=fopen("productos.dat","rb");
+    if(fp==NULL)
+    {
+        printf("Error al abrir");
+        system("pause");
+        exit(2);
+    }
+    fread(&P[x],sizeof(Sproducto),1,fp);
+    printf("Codigo          Precio          Descripcion \n");
+    while(!feof(fp))
+    {
+     printf("%d              %.2f              %s \n",P[x].codigo,P[x].precio,P[x].desc);
+     x++;
+    fread(&P[x],sizeof(Sproducto),1,fp);
+    }
+    fclose(fp);
+  return x;
+}
+void leer(char archivo[])
+{
+    int x=0;
+    FILE*fp;
+    Sproducto P;
+
+    fp=fopen(archivo,"rb");
+    if(fp==NULL)
+    {
+        printf("Error al abrir");
+        system("pause");
+        exit(2);
+    }
+    fread(&P,sizeof(Sproducto),1,fp);
+    printf("Codigo          Precio          Descripcion \n");
+    while(!feof(fp))
+    {
+    printf("%d              %.2f              %s \n",P.codigo,P.precio,P.desc);
+    fread(&P,sizeof(Sproducto),1,fp);
+    }
+    fclose(fp);
+}
